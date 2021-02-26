@@ -1,0 +1,6 @@
+.elements {
+  max-width: 882px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}

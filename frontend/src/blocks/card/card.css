@@ -1,0 +1,13 @@
+@import url("../card/__images/card__images.css");
+@import url("../card/__item/card__item.css");
+@import url("../card/__title.css/card__title.css");
+@import url("../card/__like/card__like.css");
+@import url("../card/__like/_active/card__like_active.css");
+@import url("../card/__count/card__count.css");
+@import url("../card/__trash/card__trash.css");
+@import url("../card/__trash/_active/card__trash_active.css");
+
+.card {
+  cursor: pointer;
+  position: relative;
+}

@@ -1,0 +1,27 @@
+@import url("./vendor/normalize.css");
+@import url("./vendor/fonts/fonts.css");
+@import url("./blocks/page/page.css");
+@import url("./blocks/header/header.css");
+@import url("./blocks/profile/profile.css");
+@import url("./blocks/elements/elements.css");
+@import url("./blocks/cards/cards.css");
+@import url("./blocks/card/card.css");
+@import url("./blocks/footer/footer.css");
+@import url("./blocks/popup/popup.css");
+@import url("./blocks/loading/loading.css");
+@import url("./blocks/hide/hide.css");
+@import url("./blocks/login/__link/login__link.css");
+@import url("./blocks/login/__text/login__text.css");
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background-color: black;
+  min-height: 100vh;
+}
