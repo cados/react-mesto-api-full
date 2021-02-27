@@ -65,7 +65,8 @@ export const getContent = (token) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // eslint-disable-next-line prettier/prettier
+      "Authorization": `Bearer ${token}`,
     },
   })
     .then((res) => {
