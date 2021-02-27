@@ -13,6 +13,7 @@ const getUsers = (req, res, next) => {
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
+    .orFail(() => { throw new NotFound('Нет пользователя с таким id'); })
     .then((user) => res.send(user))
     .catch(next);
 };

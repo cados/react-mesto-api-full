@@ -1,7 +1,6 @@
 class BadRequest extends Error {
   constructor(message) {
-    super();
-    this.message = message;
+    super(message);
     this.statusCode = 400;
   }
 }
