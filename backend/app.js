@@ -13,6 +13,7 @@ const cardsRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { validateLogin, validateUser } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { ServerError } = require('./errors/index');
 
 const { PORT = 3000 } = process.env;
 
@@ -43,8 +44,13 @@ app.use('/', usersRouter);
 app.use('/', cardsRouter);
 app.use(errorLogger);
 app.use(errors());
-app.use((req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+
+app.use((err, req, res) => {
+  if (err.status) {
+    res.status(err.status).send(err.message);
+    return;
+  }
+  throw new ServerError({ message: `На сервере произошла ошибка: ${err.message}` });
 });
 
 app.listen(PORT, () => {
