@@ -97,9 +97,8 @@ class Api {
 }
 
 const api = new Api({
-  url: "https://mesto.nomoreparties.co/v1/cohort-17",
+  url: "https://api.cados.students.nomoredomains.icu",
   headers: {
-    authorization: "1cc28c27-5ad4-4b72-97ab-db6c8b468da3",
     "content-type": "application/json",
   },
 });
