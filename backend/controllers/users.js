@@ -1,20 +1,14 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { BadRequest } = require('../errors/index');
+const { BadRequest, ServerError, NotFound } = require('../errors/index');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => {
-      if (users.length === 0) {
-        res.status(404).send({ message: 'Пользователи не найдены!' });
-        return;
-      }
-      res.status(200).send(users);
-    })
-    .catch((err) => res.status(500).send(err));
+    .then((users) => res.send({ data: users }))
+    .catch(next);
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -47,29 +41,27 @@ const createUser = (req, res, next) => {
       data: {
         name: user.name,
         about: user.about,
-        avatar,
+        avatar: user.avatar,
         email: user.email,
       },
     }))
     .catch(next);
 };
 
-const getUserId = (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
-        return;
-      }
-      res.status(200).send(user);
-    })
+const getUserId = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: `Передан некорректный id: ${err}` });
-        return;
+      if (err.message === 'NotValidId') {
+        throw new NotFound('Нет пользователя с таким Id');
+      } else if (err.name === 'CastError') {
+        throw new BadRequest('Введены некорректные данные');
+      } else {
+        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
       }
-      res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` });
-    });
+    })
+    .catch(next);
 };
 
 const updateUser = (req, res) => {
@@ -90,11 +82,11 @@ const updateUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка при валидации: ${err}` });
+        throw new BadRequest({ message: `Ошибка при валидации: ${err}` });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: `id пользователя не найден! ${err}` });
+        throw new NotFound({ message: `id пользователя не найден! ${err}` });
       } else {
-        res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` });
+        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
       }
     });
 };
@@ -111,17 +103,17 @@ const updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail()
+    .orFail(new BadRequest({ message: 'Ошибка при валидации.' }))
     .then((newAvatar) => {
       res.status(200).send(newAvatar);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка при валидации: ${err}` });
+        throw new BadRequest({ message: `Ошибка при валидации: ${err}` });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: `id пользователя не найден! ${err}` });
+        throw new NotFound({ message: `id пользователя не найден! ${err}` });
       } else {
-        res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` });
+        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
       }
     });
 };
