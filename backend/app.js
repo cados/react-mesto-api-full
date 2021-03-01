@@ -17,7 +17,6 @@ const ServerError = require('./errors/serv-err');
 const { validateUser, validateLogin } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-// Слушаем 3000 порт
 const { PORT = 3003 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -61,7 +60,5 @@ app.use((err, req, res) => {
 });
 
 app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-  // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);
 });
