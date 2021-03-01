@@ -14,14 +14,7 @@ const validateUser = celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom(validateUrl),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(4).max(20),
-  }),
-});
-
-const validateLogin = celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(4).max(20),
+    password: Joi.string().required().min(4).max(10),
   }),
 });
 
@@ -52,11 +45,18 @@ const validateCard = celebrate({
   }),
 });
 
+const validateLogin = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(4).max(10),
+  }),
+});
+
 module.exports = {
   validateUser,
-  validateLogin,
   validateUpdateProfile,
   validateAvatar,
   validateId,
   validateCard,
+  validateLogin,
 };

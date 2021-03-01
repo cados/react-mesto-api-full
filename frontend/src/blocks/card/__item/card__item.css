@@ -1,8 +1,0 @@
-.card__item {
-  background-color: white;
-  display: flex;
-  justify-content: space-between;
-  border-radius: 0 0 10px 10px;
-  margin-top: -4px;
-  padding: 25px 17px 32px 21px;
-}

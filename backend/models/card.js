@@ -10,11 +10,11 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
-    validate: {
-      validator(v) {
+    validate: { // опишем свойство validate
+      validator(v) { // validator - функция проверки данных. v - значение свойства avatar
         return /^((http|https):\/\/(www\.)?([\w\W]{1,})\.([a-zA-z]{2,10})([\w\W]{1,})?(#)?)$/.test(v);
       },
-      message: 'Неправильный URL!',
+      message: 'Неправильный URL!', // когда validator вернёт false, будет использовано это сообщение
     },
   },
   owner: {
@@ -22,12 +22,11 @@ const cardSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  likes:
-    [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
-      default: [],
-    }],
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    default: [],
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

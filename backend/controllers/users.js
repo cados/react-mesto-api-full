@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { BadRequest, ServerError, NotFound } = require('../errors/index');
+const BadRequestError = require('../errors/bad-req-err');
+const ServerError = require('../errors/serv-err');
+const NotFoundError = require('../errors/not-found-err');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -11,9 +13,24 @@ const getUsers = (req, res, next) => {
     .catch(next);
 };
 
+const getProfile = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        throw new NotFoundError('Нет пользователя с таким Id');
+      } else if (err.name === 'CastError') {
+        throw new BadRequestError('Введены некорректные данные');
+      } else {
+        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
+      }
+    })
+    .catch(next);
+};
+
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(() => { throw new NotFound('Нет пользователя с таким id'); })
     .then((user) => res.send(user))
     .catch(next);
 };
@@ -33,33 +50,17 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'MongoError' || err.code === 11000) {
-        throw new BadRequest('Пользователь с таким email уже существует');
+        throw new BadRequestError('Пользователь с таким email уже существует');
       } else next(err);
     })
     .then((user) => res.status(201).send({
       data: {
         name: user.name,
         about: user.about,
-        avatar: user.avatar,
+        avatar,
         email: user.email,
       },
     }))
-    .catch(next);
-};
-
-const getUserId = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(new Error('NotValidId'))
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        throw new NotFound('Нет пользователя с таким Id');
-      } else if (err.name === 'CastError') {
-        throw new BadRequest('Введены некорректные данные');
-      } else {
-        throw new ServerError('Внутренняя ошибка сервера');
-      }
-    })
     .catch(next);
 };
 
@@ -80,12 +81,10 @@ const updateUser = (req, res) => {
       res.status(200).send(newUser);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequest(`Ошибка при валидации: ${err}`);
-      } else if (err.name === 'DocumentNotFoundError') {
-        throw new NotFound('id пользователя не найден!');
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        throw new BadRequestError({ message: `Ошибка при валидации: ${err}` });
       } else {
-        throw new ServerError('Внутренняя ошибка сервера');
+        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
       }
     });
 };
@@ -102,17 +101,15 @@ const updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(new BadRequest('Ошибка при валидации.'))
+    .orFail(new BadRequestError({ message: 'Ошибка при валидации.' }))
     .then((newAvatar) => {
       res.status(200).send(newAvatar);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest('Ошибка при валидации');
-      } else if (err.name === 'DocumentNotFoundError') {
-        throw new NotFound('id пользователя не найден!');
+        throw new BadRequestError({ message: `Ошибка при валидации: ${err}` });
       } else {
-        throw new ServerError('Внутренняя ошибка сервера');
+        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
       }
     });
 };
@@ -124,11 +121,12 @@ const login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' },
       );
-      res.status(200).send({ token });
+      res
+        .send({ token: token.toString() });
     })
     .catch(next);
 };
 
 module.exports = {
-  getUsers, createUser, getUserId, updateUser, updateAvatar, login, getCurrentUser,
+  getUsers, getProfile, createUser, updateUser, updateAvatar, login, getCurrentUser,
 };

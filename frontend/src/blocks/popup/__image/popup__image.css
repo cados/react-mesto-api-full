@@ -1,6 +1,0 @@
-@import url("../__image/_login/popup__image_login.css");
-.popup__image {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-}

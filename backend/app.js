@@ -1,33 +1,37 @@
 require('dotenv').config();
+
 const express = require('express');
 
 const app = express();
-const mongoose = require('mongoose');
 const cors = require('cors');
-const helmet = require('helmet');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const { login, createUser } = require('./controllers/users');
-const usersRouter = require('./routes/users');
+const helmet = require('helmet');
+const usersRoutes = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const { validateLogin, validateUser } = require('./middlewares/validation');
+const NotFoundError = require('./errors/not-found-err');
+const ServerError = require('./errors/serv-err');
+const { validateUser, validateLogin } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { ServerError } = require('./errors/index');
 
-const { PORT = 3000 } = process.env;
+// Слушаем 3000 порт
+const { PORT = 3003 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
-  useUnifiedTopology: true,
 });
+app.use(
+  cors(),
+);
 
-app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
@@ -36,12 +40,15 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/sign-in', validateLogin, login);
-app.post('/sign-up', validateUser, createUser);
-
+app.post('/signin', validateLogin, login);
+app.post('/signup', validateUser, createUser);
 app.use(auth);
-app.use('/', usersRouter);
+app.use('/', usersRoutes);
 app.use('/', cardsRouter);
+app.use(() => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден');
+});
+
 app.use(errorLogger);
 app.use(errors());
 
@@ -54,5 +61,7 @@ app.use((err, req, res) => {
 });
 
 app.listen(PORT, () => {
+  // Если всё работает, консоль покажет, какой порт приложение слушает
+  // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);
 });
