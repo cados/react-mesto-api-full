@@ -124,6 +124,12 @@ const login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' },
       );
+      res.cookie('jwt', token, JWT_SECRET, { // JWT после создания должен быть отправлен клиенту
+        maxAge: '7d',
+        httpOnly: true,
+        secure: true,
+        sameSite: true,
+      });
       res.status(200).send({ token });
     })
     .catch(next);

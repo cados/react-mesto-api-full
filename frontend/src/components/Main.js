@@ -19,14 +19,14 @@ function Main(props) {
           </div>
           <div className="profile_text">
             <div className="profile__info">
-              <h1 className="profile__title">{currentUser.name || ""}</h1>
+              <h1 className="profile__title">{currentUser.name}</h1>
               <button
                 className="profile__edit-button"
                 onClick={props.onEditProfile}
                 type="button"
               ></button>
             </div>
-            <p className="profile__subtitle">{currentUser.about || ""}</p>
+            <p className="profile__subtitle">{currentUser.about}</p>
           </div>
         </div>
         <button
