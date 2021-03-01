@@ -40,7 +40,7 @@ const createUser = (req, res, next) => {
       data: {
         name: user.name,
         about: user.about,
-        avatar,
+        avatar: user.avatar,
         email: user.email,
       },
     }))
@@ -57,7 +57,7 @@ const getUserId = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new BadRequest('Введены некорректные данные');
       } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
+        throw new ServerError('Внутренняя ошибка сервера');
       }
     })
     .catch(next);
@@ -81,11 +81,11 @@ const updateUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest({ message: `Ошибка при валидации: ${err}` });
+        throw new BadRequest(`Ошибка при валидации: ${err}`);
       } else if (err.name === 'DocumentNotFoundError') {
-        throw new NotFound({ message: `id пользователя не найден! ${err}` });
+        throw new NotFound('id пользователя не найден!');
       } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
+        throw new ServerError('Внутренняя ошибка сервера');
       }
     });
 };
@@ -102,17 +102,17 @@ const updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(new BadRequest({ message: 'Ошибка при валидации.' }))
+    .orFail(new BadRequest('Ошибка при валидации.'))
     .then((newAvatar) => {
       res.status(200).send(newAvatar);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest({ message: `Ошибка при валидации: ${err}` });
+        throw new BadRequest('Ошибка при валидации');
       } else if (err.name === 'DocumentNotFoundError') {
-        throw new NotFound({ message: `id пользователя не найден! ${err}` });
+        throw new NotFound('id пользователя не найден!');
       } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
+        throw new ServerError('Внутренняя ошибка сервера');
       }
     });
 };
