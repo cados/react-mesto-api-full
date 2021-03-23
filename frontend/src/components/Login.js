@@ -1,8 +1,7 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 
-function Login(props) {
-  const { onLogin, onLoginState } = props;
+function Login({ onLogin, onLoginState }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const history = useHistory();

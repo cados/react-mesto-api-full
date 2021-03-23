@@ -2,8 +2,7 @@ import React from "react";
 import union from "../images/Union.svg";
 import icon from "../images/Union-1.svg";
 
-function InfoTooltip(props) {
-  const { isOpen, onClose, successStyle } = props;
+function InfoTooltip({ isOpen, onClose, successStyle }) {
   const errorImg = {
     backgroundImage: "url(" + union + ")",
   };

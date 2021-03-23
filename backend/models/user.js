@@ -18,21 +18,23 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator(v) {
-        return /^((http|https):\/\/(www\.)?([\w\W]{1,})\.([a-zA-z]{2,10})([\w\W]{1,})?(#)?)$/.test(v);
+      validator(link) {
+        return validator.isURL(link);
       },
-      message: 'Неправильный URL!',
+      message: 'Некорректный URL',
     },
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
     required: true,
     unique: true,
     validate: {
-      validator: (value) => validator.isEmail(value),
-      message: 'Укажите верный email!',
+      validator(v) {
+        return validator.isEmail(v);
+      },
+      message: 'Укажите email!',
     },
   },
   password: {

@@ -11,96 +11,103 @@ class Api {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  getInitialCards() {
+  getInitialCards(token) {
     return fetch(`${this._url}/cards`, {
       method: "GET",
-      headers: this._headers,
-    }).then((res) => {
-      return this._responseResult(res);
-    });
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(this._responseResult);
   }
-  getUserData() {
+
+  getUserData(token) {
     return fetch(`${this._url}/users/me`, {
       method: "GET",
-      headers: this._headers,
-    }).then((res) => {
-      return this._responseResult(res);
-    });
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(this._responseResult);
   }
-  addNewCard(data) {
+
+  addNewCard(name, link, token) {
     return fetch(`${this._url}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
-        name: data.name,
-        link: data.link,
+        name: name,
+        link: link,
       }),
     }).then((res) => {
       return this._responseResult(res);
     });
   }
 
-  deleteCard(data) {
-    return fetch(`${this._url}/cards/${data}`, {
+  deleteCard(cardId, token) {
+    return fetch(`${this._url}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this._headers,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     }).then((res) => {
       return this._responseResult(res);
     });
   }
 
-  updateUserData(data) {
+  updateUserData(name, about, token) {
     return fetch(`${this._url}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then((res) => {
-      return this._responseResult(res);
-    });
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: name,
+        about: about,
+      }),
+    }).then(this._responseResult);
   }
 
-  changeLikeCardStatus(card, isLikes) {
-    if (isLikes) {
-      return this.addLike(card);
-    } else {
-      return this.deleteLike(card);
-    }
+  changeLikeCard(cardId, status, token) {
+    return fetch(`${this._url}/cards/${cardId}/likes`, {
+      method: `${status ? "PUT" : "DELETE"}`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(this._responseResult);
   }
 
-  addLike(data) {
-    return fetch(`${this._url}/cards/likes/${data}`, {
-      method: "PUT",
-      headers: this._headers,
-    }).then((res) => {
-      return this._responseResult(res);
-    });
-  }
-
-  deleteLike(data) {
-    return fetch(`${this._url}/cards/likes/${data}`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then((res) => {
-      return this._responseResult(res);
-    });
-  }
-
-  updateAvatar(data) {
+  updateAvatar(link, token) {
     return fetch(`${this._url}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then((res) => {
-      return this._responseResult(res);
-    });
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        avatar: link,
+      }),
+    }).then(this._responseResult);
   }
 }
 
 const api = new Api({
-  // url: "https://api.cados.students.nomoredomains.icu",
-  url: "http://localhost:3000",
+  url: "https://api.cados.students.nomoredomains.icu",
+  //url: "http://localhost:3000",
   headers: {
-    Accept: "application/json",
     "Content-Type": "application/json",
   },
 });

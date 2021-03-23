@@ -2,43 +2,38 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
-function EditProfilePopup(props) {
+function EditProfilePopup({ onUpdateUser, isOpen, onClose }) {
   const currentUser = React.useContext(CurrentUserContext);
   const [name, setName] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [buttonText, setButtonText] = React.useState("Сохранить");
 
-  function handleNameChange(e) {
+  function handleChangeName(e) {
     setName(e.target.value);
   }
-  function handleAboutChange(e) {
+
+  function handleChangeDescription(e) {
     setDescription(e.target.value);
   }
   function handleSubmit(e) {
     e.preventDefault();
-    setButtonText("Загрузка...");
-    props
-      .onUpdateUser({ name: name, about: description })
-      .then(() => props.onClose())
-      .finally(() => {
-        setButtonText("Сохранить");
-      });
+
+    onUpdateUser({ name, about: description });
   }
 
   React.useEffect(() => {
-    if (props.isOpen === true) {
+    if (isOpen === true) {
       setName(currentUser.name);
       setDescription(currentUser.about);
     } // eslint-disable-next-line
-  }, [props.isOpen]);
+  }, [isOpen]);
 
   return (
     <PopupWithForm
       name="form"
       title="Редактировать профиль"
-      submitText={buttonText}
-      isOpen={props.isOpen}
-      onClose={props.onClose}
+      submitText="Сохранить"
+      isOpen={isOpen}
+      onClose={onClose}
       onSubmit={handleSubmit}
     >
       <label className="popup__field">
@@ -50,7 +45,7 @@ function EditProfilePopup(props) {
           minLength="2"
           maxLength="40"
           value={name}
-          onChange={handleNameChange}
+          onChange={handleChangeName}
           required
         />
         <span className="popup__input-error" id="profile-name-error"></span>
@@ -64,7 +59,7 @@ function EditProfilePopup(props) {
           minLength="2"
           maxLength="200"
           value={description}
-          onChange={handleAboutChange}
+          onChange={handleChangeDescription}
           required
         />
         <span className="popup__input-error" id="profile-prof-error"></span>

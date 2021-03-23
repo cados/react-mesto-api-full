@@ -1,10 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Register(props) {
+function Register({ onRegister, onLoginState }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { onRegister, onLoginState } = props;
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);

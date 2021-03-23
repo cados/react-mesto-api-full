@@ -13,11 +13,12 @@ const cardsRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { validateLogin, validateUser } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const errorHandler = require('./middlewares/errorHandler');
 const { ServerError } = require('./errors/index');
 
 const { PORT = 3000 } = process.env;
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(process.env.DB_CONNECT, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -52,6 +53,8 @@ app.use((err, req, res) => {
   }
   throw new ServerError({ message: `На сервере произошла ошибка: ${err.message}` });
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

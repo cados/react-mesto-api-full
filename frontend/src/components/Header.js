@@ -2,8 +2,7 @@ import React from "react";
 import logo from "../images/logo.svg";
 import { Link } from "react-router-dom";
 
-function Header(props) {
-  const { loggedIn, onSignOut, userData, loginState } = props;
+function Header({ loggedIn, onSignOut, userData, loginState }) {
   const email = userData ? userData.email : "";
   return (
     <header className="header">

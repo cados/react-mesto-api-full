@@ -1,7 +1,7 @@
 const Card = require('../models/card');
-const { BadRequest, ServerError, NotFound } = require('../errors/index');
+const { BadRequest, NotFound } = require('../errors/index');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
       if (cards.length === 0) {
@@ -10,12 +10,10 @@ const getCards = (req, res) => {
       }
       res.status(200).send(cards);
     })
-    .catch((err) => {
-      throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
-    });
+    .catch((next));
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
@@ -24,32 +22,9 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest({ message: `Введены некорректные данные: ${err}` });
-      } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
+        throw new BadRequest(err.message);
       }
-    });
-};
-
-const likeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(new Error('NotValidId'))
-    .then((likes) => {
-      res.status(200).send(likes);
-    })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        throw new NotFound({ message: 'Нет пользователя с таким Id' });
-      } else if (err.name === 'CastError') {
-        throw new BadRequest({ message: `Введены некорректные данные: ${err}` });
-      } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
-      }
-    });
+    }).catch(next);
 };
 
 const deleteCard = (req, res, next) => {
@@ -65,40 +40,33 @@ const deleteCard = (req, res, next) => {
           // eslint-disable-next-line no-shadow
           .then((card) => {
             res.status(200).send(card);
-          })
-          .catch(next);
+          });
       }
-    })
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        throw new NotFound({ message: 'Нет пользователя с таким Id' });
-      } else if (err.name === 'CastError') {
-        throw new BadRequest({ message: `Введены некорректные данные: ${err.name}` });
-      } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
-      }
-    });
+    }).catch(next);
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new Error('NotValidId'))
+    .then((card) => {
+      res.status(200).send(card);
+    })
+    .catch(next);
+};
+
+const likeCard = (req, res, next) => {
+  Card.findByIdAndUpdate(
+    req.params.id,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
     .then((likes) => {
       res.status(200).send(likes);
     })
-    .catch((err) => {
-      if (err.message === 'NotValidId') {
-        throw new NotFound({ message: `Нет пользователя с таким Id: ${err}` });
-      } else if (err.name === 'CastError') {
-        throw new BadRequest({ message: `Введены некорректные данные: ${err}` });
-      } else {
-        throw new ServerError({ message: `Внутренняя ошибка сервера: ${err}` });
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {

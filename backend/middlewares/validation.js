@@ -1,9 +1,9 @@
-const { celebrate, Joi, CelebrateErr } = require('celebrate');
+const { celebrate, Joi, CelebrateError } = require('celebrate');
 const validator = require('validator');
 
 const validateUrl = (value) => {
   if (!validator.isURL(value)) {
-    throw new CelebrateErr('Некорректный URL');
+    throw new CelebrateError('Некорректный URL');
   }
   return value;
 };
@@ -14,14 +14,14 @@ const validateUser = celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom(validateUrl),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(4).max(20),
+    password: Joi.string().required().min(5).max(20),
   }),
 });
 
 const validateLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(4).max(20),
+    password: Joi.string().required().min(5).max(20),
   }),
 });
 

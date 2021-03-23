@@ -1,43 +1,35 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm.js";
 
-function AddPlacePopup(props) {
-  const [buttonText, setButtonText] = React.useState("Создать");
+function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
   const [name, setName] = React.useState("");
   const [link, setLink] = React.useState("");
 
-  function handleNameChange(e) {
+  function handleChangeName(e) {
     setName(e.target.value);
   }
-  function handleLinkChange(e) {
+
+  function handleChangeLink(e) {
     setLink(e.target.value);
-  }
-  function handleClosePopup() {
-    props.onClose();
-    setTimeout(() => {
-      setName("");
-      setLink("");
-    }, 200);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    setButtonText("Создаем...");
-    props
-      .onAddPlace({ name, link })
-      .then(() => handleClosePopup())
-      .finally(() => {
-        setButtonText("Создать");
-      });
+    onAddPlace({ name, link });
   }
+
+  React.useEffect(() => {
+    setName("");
+    setLink("");
+  }, [isOpen]);
 
   return (
     <PopupWithForm
       name="image_add"
       title="Новое место"
-      submitText={buttonText}
-      isOpen={props.isOpen}
-      onClose={handleClosePopup}
+      submitText="Создать"
+      isOpen={isOpen}
+      onClose={onClose}
       onSubmit={handleSubmit}
     >
       <label className="popup__field">
@@ -49,8 +41,8 @@ function AddPlacePopup(props) {
           placeholder="Название"
           minLength="1"
           maxLength="30"
-          onChange={handleNameChange}
-          value={name}
+          onChange={handleChangeName}
+          value={name || ""}
           required
         />
         <span className="popup__input-error" id="image-name-input-error"></span>
@@ -62,8 +54,8 @@ function AddPlacePopup(props) {
           id="image-source-input"
           name="link"
           placeholder="Ссылка на картинку"
-          onChange={handleLinkChange}
-          value={link}
+          onChange={handleChangeLink}
+          value={link || ""}
           required
         />
         <span

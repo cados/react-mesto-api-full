@@ -1,5 +1,5 @@
-// export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
-export const BASE_URL = "http://localhost:3000";
+export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
+//export const BASE_URL = "http://localhost:3000";
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/sign-up`, {
@@ -10,7 +10,7 @@ export const register = (email, password) => {
     body: JSON.stringify({ email, password }),
   })
     .then((res) => {
-      if (res.status !== 400) {
+      if (res.status !== 409 && res.status !== 400) {
         return res.json();
       } else {
         throw new Error("Некорректно заполнено одно из полей");
@@ -62,8 +62,7 @@ export const getContent = (token) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      // eslint-disable-next-line prettier/prettier
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   })
     .then((res) => {
