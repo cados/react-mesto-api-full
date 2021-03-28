@@ -22,7 +22,7 @@ function Login({ onLogin, onLoginState }) {
         history.push("/");
       })
       .catch((err) => {
-        console.log(err);
+        throw new Error("Что-то пошло не так");
       });
   };
 

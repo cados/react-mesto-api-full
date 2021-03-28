@@ -49,7 +49,9 @@ function App() {
           setCurrentUser(user);
           setCards(cards);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          throw new Error("Что-то пошло не так");
+        });
     }
   }, [loggedIn]);
 
@@ -101,7 +103,9 @@ function App() {
         setCurrentUser(result);
         closeAllPopups();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        throw new Error("Что-то пошло не так");
+      });
   }
 
   function handleUpdateAvatar(user) {
@@ -112,7 +116,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        console.log(err);
+        throw new Error("Что-то пошло не так");
       });
   }
 
@@ -125,7 +129,7 @@ function App() {
         setCards(newCards);
       })
       .catch((err) => {
-        console.log(err);
+        throw new Error("Что-то пошло не так");
       });
   }
 
@@ -143,7 +147,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        console.log(err);
+        throw new Error("Что-то пошло не так");
       });
   }
 
@@ -155,7 +159,7 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        console.log(err);
+        throw new Error("Что-то пошло не так");
       });
   }
 
@@ -172,7 +176,6 @@ function App() {
         }
       })
       .catch((err) => {
-        console.log(err);
         handleTooltipOpen();
       });
   }
@@ -218,7 +221,6 @@ function App() {
           }
         })
         .catch((err) => {
-          console.log(err);
           history.push("/sign-in");
         });
     }

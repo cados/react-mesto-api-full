@@ -9,7 +9,7 @@ const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const invalidUrl = require('./routes/invalidRoutes');
+// const invalidUrl = require('./routes/invalidRoutes');
 const auth = require('./middlewares/auth');
 const { validateLogin, validateUser } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -40,10 +40,10 @@ app.get('/crash-test', () => {
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateUser, createUser);
 
-// app.use(auth);
+app.use(auth);
 
-app.use('/', invalidUrl, auth, usersRouter);
-app.use('/', invalidUrl, auth, cardsRouter);
+app.use('/', usersRouter);
+app.use('/', cardsRouter);
 // app.use('*', invalidUrl);
 // app.use((req, res) => {
 //   res.status(404).end('error');
