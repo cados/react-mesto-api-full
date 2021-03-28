@@ -190,7 +190,6 @@ function App() {
         }
       })
       .catch((err) => {
-        console.log(`Ошибка регистрации пользователя: ${err}`);
         handleTooltipOpen();
       });
   }

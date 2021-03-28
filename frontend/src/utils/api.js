@@ -105,8 +105,8 @@ class Api {
 }
 
 const api = new Api({
-  url: "https://api.cados.students.nomoredomains.icu",
-  //url: "http://localhost:3000",
+  //url: "https://api.cados.students.nomoredomains.icu",
+  url: "http://localhost:3000",
   headers: {
     "Content-Type": "application/json",
   },

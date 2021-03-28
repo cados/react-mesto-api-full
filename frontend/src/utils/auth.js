@@ -1,8 +1,8 @@
-export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
-//export const BASE_URL = "http://localhost:3000";
+//export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
+export const BASE_URL = "http://localhost:3000";
 
 export const register = (email, password) => {
-  return fetch(`${BASE_URL}/sign-up`, {
+  return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,13 +20,12 @@ export const register = (email, password) => {
       return res;
     })
     .catch((err) => {
-      console.log(err);
       return Promise.reject(err);
     });
 };
 
 export const authorize = (email, password) => {
-  return fetch(`${BASE_URL}/sign-in`, {
+  return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,7 +51,6 @@ export const authorize = (email, password) => {
       return;
     })
     .catch((err) => {
-      console.log(err);
       return Promise.reject(err);
     });
 };
@@ -80,7 +78,6 @@ export const getContent = (token) => {
       return data;
     })
     .catch((err) => {
-      console.log(err);
       return Promise.reject(err);
     });
 };

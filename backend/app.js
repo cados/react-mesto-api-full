@@ -9,11 +9,12 @@ const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const invalidUrl = require('./routes/invalidRoutes');
 const auth = require('./middlewares/auth');
 const { validateLogin, validateUser } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
-const { ServerError } = require('./errors/index');
+// const { ServerError, NotFoundError } = require('./errors/index');
 
 const { PORT = 3000 } = process.env;
 
@@ -36,25 +37,22 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/sign-in', validateLogin, login);
-app.post('/sign-up', validateUser, createUser);
+app.post('/signin', validateLogin, login);
+app.post('/signup', validateUser, createUser);
 
-app.use(auth);
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
+// app.use(auth);
+
+app.use('/', invalidUrl, auth, usersRouter);
+app.use('/', invalidUrl, auth, cardsRouter);
+// app.use('*', invalidUrl);
+// app.use((req, res) => {
+//   res.status(404).end('error');
+// });
+
 app.use(errorLogger);
+
 app.use(errors());
-
-app.use((err, req, res) => {
-  if (err.status) {
-    res.status(err.status).send(err.message);
-    return;
-  }
-  throw new ServerError({ message: `На сервере произошла ошибка: ${err.message}` });
-});
-
 app.use(errorHandler);
-
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

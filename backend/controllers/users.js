@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const {
-  BadRequest, NotFound, ConflictError,
+  BadRequestError, NotFoundError, ConflictError,
 } = require('../errors/index');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -57,14 +57,9 @@ const getUserId = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        throw new NotFound('Нет пользователя с таким id');
+        throw new NotFoundError('Нет пользователя с таким id');
       }
       res.status(200).send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequest(err.message);
-      }
     })
     .catch(next);
 };
@@ -84,7 +79,7 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest(err.message);
+        throw new BadRequestError(err.message);
       }
     })
     .catch(next);
@@ -103,7 +98,7 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest(err.message);
+        throw new BadRequestError(err.message);
       }
     })
     .catch(next);
