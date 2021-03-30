@@ -1,5 +1,7 @@
-export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
-//export const BASE_URL = "http://localhost:3000";
+export const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.REACT_APP_PROD_API_URL
+    : process.env.REACT_APP_DEV_API_URL;
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
