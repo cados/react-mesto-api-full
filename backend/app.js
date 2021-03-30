@@ -9,12 +9,10 @@ const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-// const invalidUrl = require('./routes/invalidRoutes');
-const auth = require('./middlewares/auth');
 const { validateLogin, validateUser } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
-// const { ServerError, NotFoundError } = require('./errors/index');
+const { NotFoundError } = require('./errors');
 
 const { PORT = 3000 } = process.env;
 
@@ -40,19 +38,19 @@ app.get('/crash-test', () => {
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateUser, createUser);
 
-app.use(auth);
-
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-// app.use('*', invalidUrl);
-// app.use((req, res) => {
-//   res.status(404).end('error');
-// });
+
+app.use('*', () => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден!');
+});
 
 app.use(errorLogger);
 
 app.use(errors());
+
 app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

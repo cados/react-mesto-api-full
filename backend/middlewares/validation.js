@@ -38,18 +38,9 @@ const validateAvatar = celebrate({
   }),
 });
 
-// const validateId = celebrate({
-//   params: Joi.object().keys({
-//     id: Joi.string().hex().length(24).required()
-//       .messages({
-//         'string.length': 'неверный id',
-//       }),
-//   }),
-// });
-
 const validateId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex().length(24).message('не верный id')
+    id: Joi.string().hex().length(24).message('Не верный формат id')
       .required(),
   }),
 });
