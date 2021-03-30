@@ -1,7 +1,5 @@
-//export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
-export const BASE_URL = `${window.location.protocol}${
-  process.env.REACT_APP_API_URL || "//localhost:3000"
-}`;
+export const BASE_URL = "https://api.cados.students.nomoredomains.icu";
+//export const BASE_URL = "http://localhost:3000";
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
