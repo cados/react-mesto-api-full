@@ -5,7 +5,6 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const { errors, isCelebrateError } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
