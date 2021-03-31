@@ -49,7 +49,7 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Картока удалена');
+        throw new NotFoundError('Картока не найдена');
       }
       res.status(200).send(card);
     })
@@ -64,7 +64,7 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Картока удалена');
+        throw new NotFoundError('Картока не найдена');
       }
       res.status(200).send(card);
     })
