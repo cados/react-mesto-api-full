@@ -39,8 +39,8 @@ const validateAvatar = celebrate({
 });
 
 const validateId = celebrate({
-  body: Joi.object().keys({
-    id: Joi.string().hex().length(24),
+  params: Joi.object().keys({
+    id: Joi.string().hex().length(24).required(),
   }),
 });
 
