@@ -47,7 +47,7 @@ function App() {
       Promise.all([api.getUserData(jwt), api.getInitialCards(jwt)])
         .then(([user, cards]) => {
           setCurrentUser(user);
-          setCards(cards);
+          setCards(cards.reverse());
         })
         .catch((err) => {
           throw new Error("Что-то пошло не так");
@@ -159,7 +159,8 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
-        throw new Error("Что-то пошло не так");
+        closeAllPopups();
+        handleTooltipOpen();
       });
   }
 

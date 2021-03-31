@@ -39,9 +39,8 @@ const validateAvatar = celebrate({
 });
 
 const validateId = celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().hex().length(24).message('Не верный формат id')
-      .required(),
+  body: Joi.object().keys({
+    id: Joi.string().hex().length(24),
   }),
 });
 
