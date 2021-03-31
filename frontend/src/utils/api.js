@@ -110,6 +110,7 @@ const api = new Api({
       ? process.env.REACT_APP_PROD_API_URL
       : process.env.REACT_APP_DEV_API_URL,
   headers: {
+    Accept: "application/json",
     "Content-Type": "application/json",
   },
 });

@@ -42,7 +42,7 @@ function App() {
   };
 
   React.useEffect(() => {
-    if (loggedIn === true) {
+    if (loggedIn) {
       const jwt = localStorage.getItem("jwt");
       Promise.all([api.getUserData(jwt), api.getInitialCards(jwt)])
         .then(([user, cards]) => {
