@@ -10,25 +10,29 @@ const validateUrl = (value) => {
 
 const validateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля name - 2' }),
+    about: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля about - 2' }),
     avatar: Joi.string().custom(validateUrl),
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(5).max(20),
+    email: Joi.string().required().email().message('Не верный email'),
+    password: Joi.string().required().min(5).max(20)
+      .messages({ 'string.min': 'Минимальная длина пароля - 5' }),
   }),
 });
 
 const validateLogin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(5).max(20),
+    email: Joi.string().required().email().message('Не верный email'),
+    password: Joi.string().required().min(5).max(20)
+      .messages({ 'string.min': 'Минимальная длина пароля - 5' }),
   }),
 });
 
 const validateUpdateProfile = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(30)
+      .messages({ 'string.min': 'Минимальная длина поля name - 2' }),
+    about: Joi.string().required().min(2).max(30)
+      .messages({ 'string.min': 'Минимальная длина поля about - 2' }),
   }),
 });
 
@@ -40,13 +44,15 @@ const validateAvatar = celebrate({
 
 const validateId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex().length(24).required(),
+    id: Joi.string().hex().length(24).message('Не верный формат id')
+      .required(),
   }),
 });
 
 const validateCard = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(30)
+      .messages({ 'string.min': 'Минимальная длина поля name - 2' }),
     link: Joi.string().custom(validateUrl).required(),
   }),
 });
