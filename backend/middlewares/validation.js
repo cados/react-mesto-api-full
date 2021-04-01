@@ -13,7 +13,7 @@ const validateUser = celebrate({
     name: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля name - 2' }),
     about: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля about - 2' }),
     avatar: Joi.string().custom(validateUrl),
-    email: Joi.string().required().email().message('Не верный email'),
+    email: Joi.string().required().email().message('Не верный формат email'),
     password: Joi.string().required().min(5).max(20)
       .messages({ 'string.min': 'Минимальная длина пароля - 5' }),
   }),
@@ -21,7 +21,7 @@ const validateUser = celebrate({
 
 const validateLogin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email().message('Не верный email'),
+    email: Joi.string().required().email().message('Не верный формат email'),
     password: Joi.string().required().min(5).max(20)
       .messages({ 'string.min': 'Минимальная длина пароля - 5' }),
   }),
