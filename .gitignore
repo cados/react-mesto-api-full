@@ -3,6 +3,8 @@
 /frontend/node_modules
 /backend/*.log
 /backend/.env
+/backend/.vscode
+
 
 npm-debug.log*
 yarn-debug.log*
