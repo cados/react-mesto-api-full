@@ -238,6 +238,20 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
+  React.useEffect(() => {
+    const handleEscClickClose = (evt) => {
+      if (evt.key === "Escape") {
+        closeAllPopups();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscClickClose);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscClickClose);
+    };
+  }, []);
+
   return (
     <div className="container">
       <CurrentUserContext.Provider value={currentUser}>
