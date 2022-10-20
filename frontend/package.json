@@ -31,7 +31,7 @@
     "prebuild": "npm run lint",
     "build": "react-scripts build",
     "predeploy": "npm run build",
-    "deploy": "scp -r ./build/* cados@80.89.229.122:/home/cados/doc/react-mesto-api-full/frontend/build",
+    "deploy": "scp -r ./build/* cados@217.12.210.55:/home/cados/www/react-mesto-api-full/frontend/build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint './src/**/*.js'"
