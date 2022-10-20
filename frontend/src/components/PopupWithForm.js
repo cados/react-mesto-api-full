@@ -8,9 +8,14 @@ function PopupWithForm({
   title,
   children,
   submitText,
+  onScreenClickClose,
 }) {
   return (
-    <div className={`popup__container ${isOpen && "popup_opened"}`} id={name}>
+    <div
+      onClick={onScreenClickClose}
+      className={`popup__container ${isOpen && "popup_opened"}`}
+      id={name}
+    >
       <form onSubmit={onSubmit} className="popup__form" name={name} noValidate>
         <button
           className="popup__close-button"

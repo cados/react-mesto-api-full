@@ -1,7 +1,12 @@
 import PopupWithForm from "./PopupWithForm.js";
 import React from "react";
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
+function EditAvatarPopup({
+  onScreenClickClose,
+  isOpen,
+  onClose,
+  onUpdateAvatar,
+}) {
   const [avatar, setAvatar] = React.useState("");
 
   function handleChangeAvatar(e) {
@@ -27,6 +32,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      onScreenClickClose={onScreenClickClose}
     >
       <label className="popup__field">
         <input

@@ -85,6 +85,12 @@ function App() {
     setLoginState(state);
   }
 
+  function handleScreenClickClose({ target }) {
+    if (target.classList.contains("popup__container")) {
+      closeAllPopups();
+    }
+  }
+
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsAddCardPopupOpen(false);
@@ -283,24 +289,28 @@ function App() {
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
+          onScreenClickClose={handleScreenClickClose}
           onUpdateUser={handleUpdateUser}
         />
 
         <AddPlacePopup
           isOpen={isAddCardPopupOpen}
           onClose={closeAllPopups}
+          onScreenClickClose={handleScreenClickClose}
           onAddPlace={handleAddPlaceSubmit}
         />
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
+          onScreenClickClose={handleScreenClickClose}
           onUpdateAvatar={handleUpdateAvatar}
         ></EditAvatarPopup>
 
         <ConfirmPopup
           isOpen={isConfirmPopupOpen}
           onClose={closeAllPopups}
+          onScreenClickClose={handleScreenClickClose}
           onDelete={handleConfirmDelete}
           card={cardDelete}
         />
@@ -309,10 +319,12 @@ function App() {
           card={dataImage}
           isOpen={isCardSelected}
           onClose={closeAllPopups}
+          onScreenClickClose={handleScreenClickClose}
         />
         <InfoTooltip
           isOpen={isTooltipOpen}
           onClose={closeAllPopups}
+          onScreenClickClose={handleScreenClickClose}
           successStyle={successToolTip}
         />
       </CurrentUserContext.Provider>

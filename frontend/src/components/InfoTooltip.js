@@ -2,7 +2,7 @@ import React from "react";
 import union from "../images/Union.svg";
 import icon from "../images/Union-1.svg";
 
-function InfoTooltip({ isOpen, onClose, successStyle }) {
+function InfoTooltip({ isOpen, onScreenClickClose, onClose, successStyle }) {
   const errorImg = {
     backgroundImage: "url(" + union + ")",
   };
@@ -12,6 +12,7 @@ function InfoTooltip({ isOpen, onClose, successStyle }) {
 
   return (
     <div
+      onClick={onScreenClickClose}
       className={isOpen ? "popup__container popup_opened" : "popup__container"}
     >
       <form className="popup__form">

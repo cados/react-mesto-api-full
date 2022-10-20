@@ -1,7 +1,13 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function ConfirmPopup({ isOpen, onClose, card, onDelete }) {
+export default function ConfirmPopup({
+  isOpen,
+  onScreenClickClose,
+  onClose,
+  card,
+  onDelete,
+}) {
   function handleSubmit(e) {
     e.preventDefault();
     onDelete(card);
@@ -13,6 +19,7 @@ export default function ConfirmPopup({ isOpen, onClose, card, onDelete }) {
       submitText="Да"
       name="confirm"
       onClose={onClose}
+      onScreenClickClose={onScreenClickClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
     ></PopupWithForm>
