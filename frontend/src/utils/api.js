@@ -13,10 +13,8 @@ class Api {
 
   getInitialCards(token) {
     return fetch(`${this._url}/cards`, {
-      method: "GET",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
     }).then(this._responseResult);
@@ -24,10 +22,8 @@ class Api {
 
   getUserData(token) {
     return fetch(`${this._url}/users/me`, {
-      method: "GET",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
     }).then(this._responseResult);
@@ -37,8 +33,7 @@ class Api {
     return fetch(`${this._url}/cards`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
@@ -54,8 +49,7 @@ class Api {
     return fetch(`${this._url}/cards/${cardId}`, {
       method: "DELETE",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
     }).then((res) => {
@@ -67,8 +61,7 @@ class Api {
     return fetch(`${this._url}/users/me`, {
       method: "PATCH",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
@@ -82,8 +75,7 @@ class Api {
     return fetch(`${this._url}/cards/${cardId}/likes`, {
       method: `${status ? "PUT" : "DELETE"}`,
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
     }).then(this._responseResult);
@@ -93,8 +85,7 @@ class Api {
     return fetch(`${this._url}/users/me/avatar`, {
       method: "PATCH",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...this._headers,
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
