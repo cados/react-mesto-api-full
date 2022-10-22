@@ -15,7 +15,7 @@ function InfoTooltip({ isOpen, onScreenClickClose, onClose, successStyle }) {
       onClick={onScreenClickClose}
       className={isOpen ? "popup__container popup_opened" : "popup__container"}
     >
-      <form className="popup__form">
+      <form className="popup__form popup__form_info">
         <button
           onClick={onClose}
           className="popup__close-button"

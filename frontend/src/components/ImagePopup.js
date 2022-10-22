@@ -2,7 +2,7 @@ function ImagePopup({ card, onClose, onScreenClickClose }) {
   return (
     <div
       className={`popup__container popup__container_image
-      ${card.link && "popup_opened"}`}
+      ${card.link ? "popup_opened" : ""}`}
       onClick={onScreenClickClose}
     >
       <figure className="popup__image">
