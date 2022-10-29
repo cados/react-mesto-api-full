@@ -1,18 +1,18 @@
-const { celebrate, Joi, CelebrateError } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
-
-const validateUrl = (value) => {
-  if (!validator.isURL(value)) {
-    throw new CelebrateError('Некорректный URL');
-  }
-  return value;
-};
 
 const validateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля name - 2' }),
     about: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля about - 2' }),
-    avatar: Joi.string().custom(validateUrl),
+    avatar: Joi.string()
+      .required()
+      .custom((value, helpers) => (validator.isURL(value)
+        ? value
+        : helpers.message('Поле avatar должно быть валидным url-адресом')))
+      .messages({
+        'string.empty': 'Поле avatar должно быть заполнено',
+      }),
     email: Joi.string().required().email().message('Не верный формат email'),
     password: Joi.string().required().min(5).max(20)
       .messages({ 'string.min': 'Минимальная длина пароля - 5' }),
@@ -38,7 +38,14 @@ const validateUpdateProfile = celebrate({
 
 const validateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().custom(validateUrl).required(),
+    avatar: Joi.string()
+      .required()
+      .custom((value, helpers) => (validator.isURL(value)
+        ? value
+        : helpers.message('Поле avatar должно быть валидным url-адресом')))
+      .messages({
+        'string.empty': 'Поле avatar должно быть заполнено',
+      }),
   }),
 });
 
@@ -52,8 +59,18 @@ const validateId = celebrate({
 const validateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30)
-      .messages({ 'string.min': 'Минимальная длина поля name - 2' }),
-    link: Joi.string().custom(validateUrl).required(),
+      .messages({ 'string.min': 'Минимальная длина поля name - 2' })
+      .messages({
+        'string.empty': 'Поле name должно быть заполнено',
+      }),
+    link: Joi.string()
+      .required()
+      .custom((value, helpers) => (validator.isURL(value)
+        ? value
+        : helpers.message('Поле link должно быть валидным url-адресом')))
+      .messages({
+        'string.empty': 'Поле link должно быть заполнено',
+      }),
   }),
 });
 
