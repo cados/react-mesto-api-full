@@ -6,7 +6,6 @@ const validateUser = celebrate({
     name: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля name - 2' }),
     about: Joi.string().min(2).max(30).messages({ 'string.min': 'Минимальная длина поля about - 2' }),
     avatar: Joi.string()
-      .required()
       .custom((value, helpers) => (validator.isURL(value)
         ? value
         : helpers.message('Поле avatar должно быть валидным url-адресом')))
