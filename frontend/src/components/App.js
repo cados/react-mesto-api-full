@@ -34,26 +34,14 @@ function App() {
   const [isCardSelected, setIsCardSelected] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  const history = useHistory();
   const [dataImage, setDataImage] = React.useState({});
+
+  const history = useHistory();
+
   const setImage = (card) => {
     setDataImage(card);
     handleCardClick();
   };
-
-  React.useEffect(() => {
-    if (loggedIn) {
-      const jwt = localStorage.getItem("jwt");
-      Promise.all([api.getUserData(jwt), api.getInitialCards(jwt)])
-        .then(([user, cards]) => {
-          setCurrentUser(user);
-          setCards(cards.reverse());
-        })
-        .catch((err) => {
-          throw new Error("Что-то пошло не так");
-        });
-    }
-  }, [loggedIn]);
 
   function handleCardClick() {
     setIsCardSelected(true);
@@ -102,41 +90,46 @@ function App() {
     setIsCardSelected(false);
   }
 
-  function handleUpdateUser(user) {
-    api
-      .updateUserData(user.name, user.about, localStorage.getItem("jwt"))
-      .then((result) => {
-        setCurrentUser(result);
-        closeAllPopups();
-      })
-      .catch((err) => {
-        throw new Error("Что-то пошло не так");
-      });
+  async function handleUpdateUser(user) {
+    try {
+      const result = await api.updateUserData(
+        user.name,
+        user.about,
+        localStorage.getItem("jwt")
+      );
+      setCurrentUser(result);
+      closeAllPopups();
+    } catch (error) {
+      throw new Error("Что-то пошло не так");
+    }
   }
 
-  function handleUpdateAvatar(user) {
-    api
-      .updateAvatar(user.avatar, localStorage.getItem("jwt"))
-      .then((result) => {
-        setCurrentUser(result);
-        closeAllPopups();
-      })
-      .catch((err) => {
-        throw new Error("Что-то пошло не так");
-      });
+  async function handleUpdateAvatar(user) {
+    try {
+      const result = await api.updateAvatar(
+        user.avatar,
+        localStorage.getItem("jwt")
+      );
+      setCurrentUser(result);
+      closeAllPopups();
+    } catch (error) {
+      throw new Error("Что-то пошло не так");
+    }
   }
 
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i === currentUser._id);
-    api
-      .changeLikeCard(card._id, !isLiked, localStorage.getItem("jwt"))
-      .then((newCard) => {
-        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
-        setCards(newCards);
-      })
-      .catch((err) => {
-        throw new Error("Что-то пошло не так");
-      });
+  async function handleCardLike(card) {
+    try {
+      const isLiked = card.likes.some((i) => i === currentUser._id);
+      const newCard = await api.changeLikeCard(
+        card._id,
+        !isLiked,
+        localStorage.getItem("jwt")
+      );
+      const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+      setCards(newCards);
+    } catch (err) {
+      throw new Error("Что-то пошло не так");
+    }
   }
 
   function handleCardDelete(card) {
@@ -144,64 +137,60 @@ function App() {
     handleConfirmDeleteClick();
   }
 
-  function handleConfirmDelete(card) {
-    api
-      .deleteCard(card._id, localStorage.getItem("jwt"))
-      .then(() => {
-        const newCards = cards.filter((c) => c._id !== card._id);
-        setCards(newCards);
-        closeAllPopups();
-      })
-      .catch((err) => {
-        throw new Error("Что-то пошло не так");
-      });
+  async function handleConfirmDelete(card) {
+    try {
+      await api.deleteCard(card._id, localStorage.getItem("jwt"));
+      const newCards = cards.filter((c) => c._id !== card._id);
+      setCards(newCards);
+      closeAllPopups();
+    } catch (err) {
+      throw new Error("Что-то пошло не так");
+    }
   }
 
-  function handleAddPlaceSubmit(card) {
-    api
-      .addNewCard(card.name, card.link, localStorage.getItem("jwt"))
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-        closeAllPopups();
-      })
-      .catch((err) => {
-        closeAllPopups();
-        handleTooltipOpen();
-      });
+  async function handleAddPlaceSubmit(card) {
+    try {
+      const newCard = await api.addNewCard(
+        card.name,
+        card.link,
+        localStorage.getItem("jwt")
+      );
+      setCards([newCard, ...cards]);
+      closeAllPopups();
+    } catch (err) {
+      closeAllPopups();
+      handleTooltipOpen();
+    }
   }
 
-  function handleLogin({ email, password }) {
-    return auth
-      .authorize(email, password)
-      .then((res) => {
-        if (res && res.token) {
-          localStorage.setItem("jwt", res.token);
-          setLoggedIn(true);
-          history.push("/");
-        } else {
-          throw new Error("Не удалось войти в аккаунт");
-        }
-      })
-      .catch((err) => {
-        handleTooltipOpen();
-      });
+  async function handleLogin({ email, password }) {
+    try {
+      const res = await auth.authorize(email, password);
+      if (res && res.token) {
+        localStorage.setItem("jwt", res.token);
+        setLoggedIn(true);
+        history.push("/");
+      } else {
+        throw new Error("Не удалось войти в аккаунт");
+      }
+    } catch (err) {
+      handleTooltipOpen();
+    }
   }
 
-  function handleRegister({ email, password }) {
-    return auth
-      .register(email, password)
-      .then((res) => {
-        if (res) {
-          handleSuccessToolTip();
-          setTimeout(handleTooltipOpen, 500);
-          history.push("/sign-in");
-        } else {
-          throw new Error("Не удалось завершить регистрацию");
-        }
-      })
-      .catch((err) => {
-        handleTooltipOpen();
-      });
+  async function handleRegister({ email, password }) {
+    try {
+      const res = await auth.register(email, password);
+      if (res) {
+        handleSuccessToolTip();
+        setTimeout(handleTooltipOpen, 500);
+        history.push("/sign-in");
+      } else {
+        throw new Error("Не удалось завершить регистрацию");
+      }
+    } catch (err) {
+      handleTooltipOpen();
+    }
   }
 
   function signOut() {
@@ -210,12 +199,31 @@ function App() {
     history.push("/sign-in");
   }
 
-  function tokenCheck() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth
-        .getContent(jwt)
-        .then((res) => {
+  React.useEffect(() => {
+    const fetchData = async () => {
+      if (loggedIn) {
+        try {
+          const jwt = localStorage.getItem("jwt");
+          const [user, cards] = await Promise.all([
+            api.getUserData(jwt),
+            api.getInitialCards(jwt),
+          ]);
+          setCurrentUser(user);
+          setCards(cards.reverse());
+        } catch (error) {
+          throw new Error("Что-то пошло не так");
+        }
+      }
+    };
+    fetchData();
+  }, [loggedIn]);
+
+  React.useEffect(() => {
+    const tokenCheck = async () => {
+      const jwt = localStorage.getItem("jwt");
+      if (jwt) {
+        try {
+          const res = await auth.getContent(jwt);
           if (res) {
             setUserData({
               id: res._id,
@@ -226,17 +234,13 @@ function App() {
           } else {
             localStorage.removeItem("jwt");
           }
-        })
-        .catch((err) => {
+        } catch (err) {
           history.push("/sign-in");
-        });
-    }
-  }
-
-  React.useEffect(() => {
+        }
+      }
+    };
     tokenCheck();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn]);
+  }, [history]);
 
   React.useEffect(() => {
     const handleEscClickClose = (evt) => {
@@ -244,9 +248,7 @@ function App() {
         closeAllPopups();
       }
     };
-
     document.addEventListener("keydown", handleEscClickClose);
-
     return () => {
       document.removeEventListener("keydown", handleEscClickClose);
     };
