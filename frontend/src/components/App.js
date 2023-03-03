@@ -35,6 +35,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [dataImage, setDataImage] = React.useState({});
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const history = useHistory();
 
@@ -203,6 +204,7 @@ function App() {
     const fetchData = async () => {
       if (loggedIn) {
         try {
+          setIsLoading(true);
           const jwt = localStorage.getItem("jwt");
           const [user, cards] = await Promise.all([
             api.getUserData(jwt),
@@ -210,6 +212,7 @@ function App() {
           ]);
           setCurrentUser(user);
           setCards(cards.reverse());
+          setIsLoading(false);
         } catch (error) {
           throw new Error("Что-то пошло не так");
         }
@@ -271,6 +274,7 @@ function App() {
             loggedIn={loggedIn}
             component={Main}
             cards={cards}
+            isLoading={isLoading}
             onCardClick={handleCardClick}
             onEditProfile={handleEditProfileClick}
             onAddCard={handleAddPlaceClick}

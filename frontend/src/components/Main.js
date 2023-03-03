@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "./Card";
+import Loader from "./Loader";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 function Main({
@@ -10,6 +11,7 @@ function Main({
   clickImages,
   onCardLike,
   onCardDelete,
+  isLoading,
 }) {
   const currentUser = React.useContext(CurrentUserContext);
   return (
@@ -45,15 +47,19 @@ function Main({
 
       <section className="elements">
         <ul className="cards">
-          {cards.map((card) => (
-            <Card
-              key={card._id}
-              card={card}
-              onCardClick={clickImages}
-              onCardLike={onCardLike}
-              onCardDelete={onCardDelete}
-            />
-          ))}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            cards.map((card) => (
+              <Card
+                key={card._id}
+                card={card}
+                onCardClick={clickImages}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
+              />
+            ))
+          )}
         </ul>
       </section>
     </>
